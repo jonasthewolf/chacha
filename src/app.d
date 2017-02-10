@@ -10,9 +10,6 @@ import chacha : chacha, nonce;
 
 
 
-
-
-
 //void main() {
 unittest {
 	//const key<256 / 8> mykey { }; //{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
@@ -21,11 +18,6 @@ unittest {
 	immutable nonce mynonce = [ 0x09000000, 0x4a000000, 0x0 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto actualState = c.print_state();
-	auto expectedState = "61707865 3320646e 79622d32 6b206574 03020100 07060504 0b0a0908 0f0e0d0c 13121110 17161514 1b1a1918 1f1e1d1c 00000001 09000000 4a000000 00000000";
-
-	assert (actualState == expectedState);
-
 	auto block = c.get_next_block();
 	auto writer = appender!string();
 	foreach ( b ; block) {
