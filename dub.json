@@ -3,7 +3,15 @@
 	"description" : "A chacha20 implementation according to RFC7539",
 	"authors" : ["Jonas Wolf"],
 	"version" : "1.0.0",
-	"dependencies" : {
-	}
-
+	"configurations" : [
+	    {
+	       "name" : "executable",
+	       "targetType" : "executable",
+	    },
+	    {
+	       "name" : "library",
+	       "targetType" : "library",
+	    }
+	 ]
+	    
 }

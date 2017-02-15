@@ -1,4 +1,4 @@
-build_targets=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<build_targets xmlns\="org.dsource.ddt.ide.core">\n<target auto_enabled\="false" config\="(default)" n_enabled\="true" version2\="true">\n<command_invocation append_env\="true" command_arguments\="${DUB_TOOL_PATH} build --compiler\=/home/jonas/Downloads/ldc2-1.1.0-beta5-linux-x86_64/bin/ldc2">\n<env_vars/>\n</command_invocation>\n</target>\n<target auto_enabled\="false" config\="(default)\:unittest" n_enabled\="true" version2\="true"/>\n</build_targets>\n
+build_targets=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<build_targets xmlns\="org.dsource.ddt.ide.core">\n<target auto_enabled\="false" config\="executable" n_enabled\="false" version2\="true"/>\n<target auto_enabled\="true" config\="executable\:unittest" n_enabled\="true" version2\="true"/>\n<target auto_enabled\="false" config\="library" n_enabled\="false" version2\="true"/>\n<target auto_enabled\="false" config\="library\:unittest" n_enabled\="false" version2\="true"/>\n</build_targets>\n
 dfmt_path=
 eclipse.preferences.version=1
 format_onSave=false

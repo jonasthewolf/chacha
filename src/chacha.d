@@ -1,5 +1,6 @@
 
 import std.format : formattedWrite;
+import std.bitmanip : nativeToLittleEndian;
 
 import rotate;
 import endianness;
@@ -32,13 +33,10 @@ public:
 		state[1] = read_as_little_endian(0x3320646e);
 		state[2] = read_as_little_endian(0x79622d32);
 		state[3] = read_as_little_endian(0x6b206574);
-	    for (auto i = 0; i < usedkey.get_key_length(); i++) {
-	    	state[4+i] = usedkey.get_key_bits()[i];
-	    }
-	    state[block_number_index] = 0; // block number
-	    state[13] = n[0];
-	    state[14] = n[1];
-	    state[15] = n[2];
+	    
+	    reset_block_counter();
+	    set_key(usedkey);
+	    set_nonce(n);
 	}
 	
 	nothrow ~this() {
@@ -47,7 +45,8 @@ public:
 	static immutable size_t block_size = 64u / 4u;
 	alias block_type = uint[block_size];
 
-	block_type get_next_block() {
+	ubyte[] get_keystream(uint blocknumber) {
+		state[block_number_index] = blocknumber;
 		auto working_state = state;
 		for (int i = 0; i < rounds/2; ++i) {
 			quarter_round(working_state, 0u, 4u, 8u, 12u);
@@ -60,22 +59,30 @@ public:
 			quarter_round(working_state, 3u, 4u, 9u, 14u);
 		}
 		working_state[] += state[];
-		state[block_number_index]++;
 		return serialize_inner_state(working_state);
 	}
+
+	ubyte[] get_next_keystream() {
+		return get_keystream(state[block_number_index] + 1);
+	}
 	
-//	string print_state() {
-//		auto writer = appender!string();
-//		foreach (d ; state) {
-//			formattedWrite(writer, "%08x ", d);
-//		}
-//		return writer.data;
-//	};
-	
+
 private:
-	void reset_block_counter();
-	void set_key(const ref k usedkey);
-	void set_nonce(const ref nonce n);
+	void reset_block_counter() {
+		state[block_number_index] = 0;
+	}
+
+	void set_key(const ref k usedkey) {
+		for (auto i = 0; i < usedkey.get_key_length(); i++) {
+	    	state[4+i] = usedkey.get_key_bits()[i];
+	    }
+	}
+
+	void set_nonce(const ref nonce n) {
+		state[13] = n[0];
+	    state[14] = n[1];
+	    state[15] = n[2];
+	}
 
 	void quarter_round(ref inner_state state, immutable size_t a, immutable size_t b,
 			immutable size_t c, immutable size_t d) {
@@ -93,9 +100,14 @@ private:
 		state[b] = rotate_left7(state[b]);
     }
 	
-	const block_type serialize_inner_state(inner_state state) {
-		// TODO really serialize...
-		return state;
+	const ubyte[] serialize_inner_state(inner_state state) {
+		ubyte[] stream = new ubyte[state.length * 4];
+		for (int i = 0; i < state.length; i++) {
+			ubyte[4] t = nativeToLittleEndian(state[i]);
+			stream[(i*4)..(i*4+4)] = t;
+		}
+		
+		return stream;
 	}
 	
 };

@@ -12,8 +12,6 @@ public:
 	
 	@nogc this (in ubyte[key_length] inkey) {
 		for (auto i = 0; i < key_length; i += 4) {
-			//key_bits[i/4] = inkey[i+3] << 24 | inkey[i+2] << 16 | inkey[i+1] << 8 | inkey[i] << 0;
-			//key_bits[i/4] = littleEndianToNative!uint(inkey[i..i+3]);
 			key_bits[i/4] = read_as_little_endian(inkey[i..i+4]);
 		}
 	}
