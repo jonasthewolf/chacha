@@ -103,8 +103,7 @@ private:
 	const ubyte[] serialize_inner_state(inner_state state) {
 		ubyte[] stream = new ubyte[state.length * 4];
 		for (int i = 0; i < state.length; i++) {
-			ubyte[4] t = nativeToLittleEndian(state[i]);
-			stream[(i*4)..(i*4+4)] = t;
+			stream[(i*4)..(i*4+4)] = nativeToLittleEndian(state[i]);
 		}
 		
 		return stream;
