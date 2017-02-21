@@ -45,7 +45,7 @@ public:
 	static immutable size_t block_size = 64u / 4u;
 	alias block_type = uint[block_size];
 
-	void get_keystream(ref ubyte[] keystream, uint blocknumber) {
+	ubyte[] get_keystream(uint blocknumber) {
 		state[block_number_index] = blocknumber;
 		auto working_state = state;
 		for (int i = 0; i < rounds/2; ++i) {
@@ -59,11 +59,11 @@ public:
 			quarter_round(working_state, 3u, 4u, 9u, 14u);
 		}
 		working_state[] += state[];
-		serialize_inner_state(keystream, working_state);
+		return serialize_inner_state(working_state);
 	}
 
-	void get_next_keystream(ref ubyte[] keystream) {
-		get_keystream(keystream, state[block_number_index] + 1);
+	ubyte[] get_next_keystream() {
+		return get_keystream(state[block_number_index] + 1);
 	}
 	
 
@@ -100,10 +100,13 @@ private:
 		state[b] = rotate_left7(state[b]);
     }
 	
-	void serialize_inner_state(ref ubyte[] keystream, inner_state state) {
+	const ubyte[] serialize_inner_state(inner_state state) {
+		ubyte[] stream = new ubyte[state.length * 4];
 		for (int i = 0; i < state.length; i++) {
-			keystream[(i*4)..(i*4+4)] = nativeToLittleEndian(state[i]);
+			stream[(i*4)..(i*4+4)] = nativeToLittleEndian(state[i]);
 		}
+		
+		return stream;
 	}
 	
 };
