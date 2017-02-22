@@ -18,6 +18,10 @@ alias inner_state = uint[inner_state_size];
 static immutable auto nonce_length = 3u;
 alias nonce = uint[nonce_length];
 
+alias keystream_block = ubyte[inner_state_size * uint.sizeof];
+
+
+
 struct chacha(immutable size_t rounds, alias k) {
 	static assert(rounds % 2u == 0);  // Number of rounds has to be even.
 
@@ -45,7 +49,7 @@ public:
 	static immutable size_t block_size = 64u / 4u;
 	alias block_type = uint[block_size];
 
-	ubyte[] get_keystream(uint blocknumber) {
+	void get_keystream(ref keystream_block keystream, uint blocknumber) {
 		state[block_number_index] = blocknumber;
 		auto working_state = state;
 		for (int i = 0; i < rounds/2; ++i) {
@@ -59,11 +63,11 @@ public:
 			quarter_round(working_state, 3u, 4u, 9u, 14u);
 		}
 		working_state[] += state[];
-		return serialize_inner_state(working_state);
+		serialize_inner_state(keystream, working_state);
 	}
 
-	ubyte[] get_next_keystream() {
-		return get_keystream(state[block_number_index] + 1);
+	void get_next_keystream(keystream_block keystream) {
+		return get_keystream(keystream, state[block_number_index] + 1);
 	}
 	
 
@@ -100,13 +104,10 @@ private:
 		state[b] = rotate_left7(state[b]);
     }
 	
-	const ubyte[] serialize_inner_state(inner_state state) {
-		ubyte[] stream = new ubyte[state.length * 4];
+	void serialize_inner_state(ref keystream_block keystream, inner_state state) {
 		for (int i = 0; i < state.length; i++) {
-			stream[(i*4)..(i*4+4)] = nativeToLittleEndian(state[i]);
+			keystream[(i*4)..(i*4+4)] = nativeToLittleEndian(state[i]);
 		}
-		
-		return stream;
 	}
 	
 };

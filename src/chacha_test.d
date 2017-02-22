@@ -16,7 +16,8 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(0);
+	ubyte[64] keystream; 
+	c.get_keystream(keystream, 0);
 	auto writer = appender!string();
 	foreach ( uint b ; keystream) {
 			formattedWrite(writer, "%02x ", (b));
@@ -33,7 +34,8 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(1);
+	ubyte[64] keystream; 
+	c.get_keystream(keystream, 1);
 	auto writer = appender!string();
 	foreach ( uint b ; keystream) {
 			formattedWrite(writer, "%02x ", (b));
@@ -50,7 +52,8 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(1);
+	ubyte[64] keystream; 
+	c.get_keystream(keystream, 1);
 	auto writer = appender!string();
 	foreach ( uint b ; keystream) {
 			formattedWrite(writer, "%02x ", (b));
@@ -67,7 +70,8 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(2);
+	ubyte[64] keystream; 
+	c.get_keystream(keystream, 2);
 	auto writer = appender!string();
 	foreach ( uint b ; keystream) {
 			formattedWrite(writer, "%02x ", (b));
@@ -84,7 +88,8 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x02000000 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(0);
+	ubyte[64] keystream; 
+	c.get_keystream(keystream, 0);
 	auto writer = appender!string();
 	foreach ( uint b ; keystream) {
 			formattedWrite(writer, "%02x ", (b));
@@ -101,7 +106,8 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(0);
+	ubyte[64] keystream; 
+	c.get_keystream(keystream, 0);
 	immutable ubyte[64] plaintext =  0;
 	auto ciphertext = new ubyte[64];
 	ciphertext[] = plaintext[] ^ keystream[];
@@ -122,8 +128,14 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x02000000 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(1) ~ c.get_keystream(2) ~ c.get_keystream(3) ~ c.get_keystream(4) ~ c.get_keystream(5) ~ c.get_keystream(6);
 	immutable ubyte[] plaintext = cast(immutable ubyte[])"Any submission to the IETF intended by the Contributor for publication as all or part of an IETF Internet-Draft or RFC and any statement made within the context of an IETF activity is considered an \"IETF Contribution\". Such statements include oral statements in IETF sessions, as well as written and electronic communications made at any time or place, which are addressed to";
+	auto keystream = new ubyte[384];
+	c.get_keystream(keystream[0..64], 1);
+	c.get_keystream(keystream[64..128], 2);
+	c.get_keystream(keystream[128..192], 3);
+	c.get_keystream(keystream[192..256], 4);
+	c.get_keystream(keystream[256..320], 5);
+	c.get_keystream(keystream[320..384], 6);
 	auto ciphertext = new ubyte[plaintext.length];
 	ciphertext[] = plaintext[] ^ keystream[];
 	auto writer = appender!string();
@@ -143,7 +155,9 @@ unittest {
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x02000000 ];
 	auto c = chacha!(20, key!(256 / 8))(mykey, mynonce);
 	
-	auto keystream = c.get_keystream(42) ~ c.get_keystream(43);
+	auto keystream = new ubyte[128];
+	c.get_keystream(keystream[0..64], 42);
+	c.get_keystream(keystream[64..128], 43);
 	immutable ubyte[] plaintext = cast(immutable ubyte[])"'Twas brillig, and the slithy toves\nDid gyre and gimble in the wabe:\nAll mimsy were the borogoves,\nAnd the mome raths outgrabe.";
 	auto ciphertext = new ubyte[plaintext.length];
 	ciphertext[] = plaintext[] ^ keystream[];
@@ -161,6 +175,7 @@ unittest {
 
 void main()
 {
+	// Needed to execute unit tests
 }
 
 
