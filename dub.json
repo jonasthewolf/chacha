@@ -6,11 +6,11 @@
 	"configurations" : [
 	    {
 	       "name" : "executable",
-	       "targetType" : "executable",
+	       "targetType" : "executable"
 	    },
 	    {
 	       "name" : "library",
-	       "targetType" : "library",
+	       "targetType" : "library"
 	    }
 	 ]
 	    
