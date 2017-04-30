@@ -1,5 +1,7 @@
-import endianness;
-import std.bitmanip;
+
+module jw.crypto.symmetrickey;
+
+import std.bitmanip : littleEndianToNative;
 
 
 // Key length in byte
@@ -12,7 +14,8 @@ public:
 	
 	@nogc this (in ubyte[key_length] inkey) {
 		for (auto i = 0; i < key_length; i += 4) {
-			key_bits[i/4] = read_as_little_endian(inkey[i..i+4]);
+			const ubyte[4] inkey_slice = inkey[i..i+4u];
+			key_bits[i/4u] = littleEndianToNative!(uint, inkey_slice.length)(inkey_slice);
 		}
 	}
 		

@@ -1,3 +1,4 @@
+module jw.util.rotate;
 
 /// Tempalte to rotate bits of unsigned integers.
 T rotate_left(T, immutable int num)(T value)

@@ -1,16 +1,17 @@
 module app;
 
+import jw.crypto.algorithm.chacha : chacha, nonce;
+import jw.crypto.symmetrickey : key;
+
 import std.array : appender;
 import std.format : formattedWrite;
 
 import std.stdio;
 
-import key : key;
-import chacha : chacha, nonce;
-import endianness;
+
 
 /// keystream Function Test Vector #1
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey =  0;
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
@@ -23,12 +24,15 @@ import endianness;
 			formattedWrite(writer, "%02x ", (b));
 	}
 	immutable actual = writer.data;
-	immutable expected = "76 b8 e0 ad a0 f1 3d 90 40 5d 6a e5 53 86 bd 28 bd d2 19 b8 a0 8d ed 1a a8 36 ef cc 8b 77 0d c7 da 41 59 7c 51 57 48 8d 77 24 e0 3f b8 d8 4a 37 6a 43 b8 f4 15 18 a1 1c c3 87 b6 69 b2 ee 65 86 ";
+	immutable expected = "76 b8 e0 ad a0 f1 3d 90 40 5d 6a e5 53 86 bd 28 " ~
+	                     "bd d2 19 b8 a0 8d ed 1a a8 36 ef cc 8b 77 0d c7 " ~
+						 "da 41 59 7c 51 57 48 8d 77 24 e0 3f b8 d8 4a 37 " ~
+						 "6a 43 b8 f4 15 18 a1 1c c3 87 b6 69 b2 ee 65 86 ";
 	assert (actual == expected);
 }
 
 /// keystream Function Test Vector #2
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey =  0;
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
@@ -41,12 +45,15 @@ import endianness;
 			formattedWrite(writer, "%02x ", (b));
 	}
 	immutable actual = writer.data;
-	immutable expected = "9f 07 e7 be 55 51 38 7a 98 ba 97 7c 73 2d 08 0d cb 0f 29 a0 48 e3 65 69 12 c6 53 3e 32 ee 7a ed 29 b7 21 76 9c e6 4e 43 d5 71 33 b0 74 d8 39 d5 31 ed 1f 28 51 0a fb 45 ac e1 0a 1f 4b 79 4d 6f ";
+	immutable expected = "9f 07 e7 be 55 51 38 7a 98 ba 97 7c 73 2d 08 0d cb " ~
+						 "0f 29 a0 48 e3 65 69 12 c6 53 3e 32 ee 7a ed 29 b7 " ~
+						 "21 76 9c e6 4e 43 d5 71 33 b0 74 d8 39 d5 31 ed 1f " ~
+						 "28 51 0a fb 45 ac e1 0a 1f 4b 79 4d 6f ";
 	assert (actual == expected);
 }
 
 /// keystream Function Test Vector #3
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey = [31:1];
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
@@ -59,12 +66,15 @@ import endianness;
 			formattedWrite(writer, "%02x ", (b));
 	}
 	immutable actual = writer.data;
-	immutable expected = "3a eb 52 24 ec f8 49 92 9b 9d 82 8d b1 ce d4 dd 83 20 25 e8 01 8b 81 60 b8 22 84 f3 c9 49 aa 5a 8e ca 00 bb b4 a7 3b da d1 92 b5 c4 2f 73 f2 fd 4e 27 36 44 c8 b3 61 25 a6 4a dd eb 00 6c 13 a0 ";
+	immutable expected = "3a eb 52 24 ec f8 49 92 9b 9d 82 8d b1 ce d4 dd 83 " ~
+						 "20 25 e8 01 8b 81 60 b8 22 84 f3 c9 49 aa 5a 8e ca " ~ 
+						 "00 bb b4 a7 3b da d1 92 b5 c4 2f 73 f2 fd 4e 27 36 " ~ 
+						 "44 c8 b3 61 25 a6 4a dd eb 00 6c 13 a0 ";
 	assert (actual == expected);
 }
 
 /// keystream Function Test Vector #4
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey = [1:0xff];
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
@@ -82,7 +92,7 @@ import endianness;
 }
 
 /// keystream Function Test Vector #5
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey;
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x02000000 ];
@@ -100,7 +110,7 @@ import endianness;
 }
 
 /// Encryption Test Vector #1
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey =  0;
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x0 ];
@@ -122,7 +132,7 @@ import endianness;
 }
 
 /// Encryption Test Vector #2
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey =  [31:1];
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x02000000 ];
@@ -149,7 +159,7 @@ import endianness;
 }
 
 /// Encryption Test Vector #3
-@safe unittest {
+@system unittest {
 	immutable ubyte[256/8] inkey = [0x1c, 0x92, 0x40, 0xa5, 0xeb, 0x55, 0xd3, 0x8a, 0xf3, 0x33, 0x88, 0x86, 0x04, 0xf6, 0xb5, 0xf0, 0x47, 0x39, 0x17, 0xc1, 0x40, 0x2b, 0x80, 0x09, 0x9d, 0xca, 0x5c, 0xbc, 0x20, 0x70, 0x75, 0xc0];
 	const auto mykey = key!(256/8)(inkey);
 	immutable nonce mynonce = [ 0x00000000, 0x00000000, 0x02000000 ];

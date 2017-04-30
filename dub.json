@@ -2,6 +2,7 @@
 	"name" : "chacha",
 	"description" : "A chacha20 implementation according to RFC7539",
 	"authors" : ["Jonas Wolf"],
+	"copyright": "Copyright © 2017, Jonas Wolf",
 	"version" : "1.0.0",
 	"configurations" : [
 	    {

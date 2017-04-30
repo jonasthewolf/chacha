@@ -1,9 +1,11 @@
 
-import std.bitmanip : nativeToLittleEndian;
+module jw.crypto.algorithm.chacha;
 
-import rotate;
-import endianness;
-import key;
+import jw.crypto.symmetrickey : key;
+import jw.util.rotate;
+
+import std.bitmanip : littleEndianToNative, nativeToLittleEndian;
+
 
 // Rotations are required for algorithm
 alias rotate_left7 = rotate_left!(uint, 7);
@@ -36,10 +38,10 @@ public:
 	@disable this();
 	
 	@nogc this(ref const k usedkey, ref const nonce n) {
-		state[0] = read_as_little_endian(0x61707865);
-		state[1] = read_as_little_endian(0x3320646e);
-		state[2] = read_as_little_endian(0x79622d32);
-		state[3] = read_as_little_endian(0x6b206574);
+		state[0] = littleEndianToNative!(uint,4u)([0x61u, 0x70u, 0x78u, 0x65u]);
+		state[1] = littleEndianToNative!(uint,4u)([0x33u, 0x20u, 0x64u, 0x6eu]);
+		state[2] = littleEndianToNative!(uint,4u)([0x79u, 0x62u, 0x2du, 0x32u]);
+		state[3] = littleEndianToNative!(uint,4u)([0x6bu, 0x20u, 0x65u, 0x74u]);
 	    
 	    reset_block_counter();
 	    set_key(usedkey);
