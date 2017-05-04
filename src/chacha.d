@@ -38,10 +38,10 @@ public:
 	@disable this();
 	
 	@nogc this(ref const k usedkey, ref const nonce n) {
-		state[0] = littleEndianToNative!(uint,4u)([0x61u, 0x70u, 0x78u, 0x65u]);
-		state[1] = littleEndianToNative!(uint,4u)([0x33u, 0x20u, 0x64u, 0x6eu]);
-		state[2] = littleEndianToNative!(uint,4u)([0x79u, 0x62u, 0x2du, 0x32u]);
-		state[3] = littleEndianToNative!(uint,4u)([0x6bu, 0x20u, 0x65u, 0x74u]);
+		state[0] = littleEndianToNative!(uint,4u)([0x65u, 0x78u, 0x70u, 0x61u]);
+		state[1] = littleEndianToNative!(uint,4u)([0x6eu, 0x64u, 0x20u, 0x33u]);
+		state[2] = littleEndianToNative!(uint,4u)([0x32u, 0x2du, 0x62u, 0x79u]);
+		state[3] = littleEndianToNative!(uint,4u)([0x74u, 0x65u, 0x20u, 0x6bu]);
 	    
 	    reset_block_counter();
 	    set_key(usedkey);
